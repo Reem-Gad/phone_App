@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.example.phoneapp.adapter.CallsRvAdapter;
 import com.example.phoneapp.models.ModelCalls;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class FragmentCalls extends Fragment {
@@ -45,7 +43,7 @@ public class FragmentCalls extends Fragment {
         RecyclerView.LayoutManager layoutManager= linearLayoutManager;
         recyclerView.setLayoutManager(layoutManager);
 
-        CallsRvAdapter adapter=new CallsRvAdapter(getContext(),getCallsLods());
+        CallsRvAdapter adapter=new CallsRvAdapter(getContext(), getCallsLogs());
         recyclerView.setAdapter(adapter);
 
 
@@ -53,23 +51,22 @@ public class FragmentCalls extends Fragment {
 
 
     }
-    private List<ModelCalls>getCallsLods(){
+    private List<ModelCalls> getCallsLogs(){
         List<ModelCalls>list=new ArrayList<>();
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG)
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALL_LOG)
                 != PackageManager.PERMISSION_GRANTED){
                    ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.READ_CALL_LOG},1);
         }
         Cursor cursor=getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI,null,
-                null,null,CallLog.Calls.DATE+"ASC");
+                null,null,CallLog.Calls.DATE + " ASC");
        int number=cursor.getColumnIndex(CallLog.Calls.NUMBER);
        int duration=cursor.getColumnIndex(CallLog.Calls.DURATION);
-       int data=cursor.getColumnIndex(CallLog.Calls.DATE);
+       int date=cursor.getColumnIndex(CallLog.Calls.DATE);
        cursor.moveToFirst();
        while (cursor.moveToNext()){
-           Date datel=new Date(Long.valueOf(cursor.getString(data)));
-           list.add(new ModelCalls(cursor.getString(number),cursor.getString(duration),datel.toString()));
-           Log.d("MIC:",cursor.getString(number));
+           list.add(new ModelCalls(cursor.getString(number),cursor.getString(duration),cursor.getString(date)));
+//           Log.d("MIC:",cursor.getString(number));
 
        }
         return list;
