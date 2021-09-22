@@ -66,7 +66,6 @@ public class FragmentCalls extends Fragment {
        cursor.moveToFirst();
        while (cursor.moveToNext()){
            list.add(new ModelCalls(cursor.getString(number),cursor.getString(duration),cursor.getString(date)));
-//           Log.d("MIC:",cursor.getString(number));
 
        }
         return list;
